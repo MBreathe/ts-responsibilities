@@ -7,7 +7,9 @@
         "build": "next build",
         "start": "next start",
         "lint": "eslint",
-        "prepare": "husky && husky install"
+        "prepare": "husky && husky install",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
     },
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown",
