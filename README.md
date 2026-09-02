@@ -2,10 +2,6 @@
 
 CRUD web application to handle shared responsibilities around the house.
 
-# Implementation plan
-
-_**IMPORTANT**_ to fill this first
-
 ## **BACKEND**
 
 ## API Map
@@ -50,4 +46,6 @@ const blog = new Schema(
 );
 ```
 
-## FRONTEND
+## **FRONTEND**
+
+_TODO: fill the rest_
