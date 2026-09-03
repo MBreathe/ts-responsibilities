@@ -6,6 +6,10 @@ export default async function dbConnect() {
     if (!MONGODB_URI) {
         throw new Error('Please define the MONGODB_URI environment variable');
     }
-    await mongoose.connect(MONGODB_URI);
-    return mongoose;
+    try {
+        await mongoose.connect(MONGODB_URI);
+        return mongoose;
+    } catch (err) {
+        console.error(`Database connection error: ${err}`);
+    }
 }

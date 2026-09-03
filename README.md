@@ -18,7 +18,6 @@ TASKS:
 USER:
     GET     api/users               Get list of all users
     GET     api/users/:id           Get a user
-    GET     api/users/:id/tasks     Get a list of tasks assigned to a user
     POST    api/users               Create a user
     UPDATE  api/users/:id           Update a user
     DELETE  api/users/:id           Delete a user
@@ -26,7 +25,6 @@ USER:
 ROOM:
     GET     api/rooms               Get list of all rooms
     GET     api/rooms/:id           Get a room
-    GET     api/rooms/:id/tasks     Get a list of tasks related to a room
     POST    api/rooms               Create a room
     UPDATE  api/rooms/:id           Update a room
     DELETE  api/rooms/:id           Delete a room
