@@ -94,4 +94,6 @@ const taskSchema = new Schema({
 });
 ```
 
+_TODO: double check everything for potential errors, add tests_
+
 ## **FRONTEND**
