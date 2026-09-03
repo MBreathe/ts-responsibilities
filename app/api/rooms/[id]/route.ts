@@ -45,7 +45,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     }
 }
 
-export async function DELETE({ params }: Params) {
+export async function DELETE(_request: NextRequest, { params }: Params) {
     const { id } = await params;
     const { room, error } = await getRoom(id);
     if (error) return error;
