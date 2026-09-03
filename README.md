@@ -1,6 +1,6 @@
 # Responsibilities
 
-CRUD web application to handle shared responsibilities around the house...
+CRUD web application to handle shared responsibilities around the house.
 
 ## **BACKEND**
 
