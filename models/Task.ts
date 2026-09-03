@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const { Schema, SchemaTypes, model } = mongoose;
 
 const taskSchema = new Schema({
-    title: String,
+    title: { type: String, required: true },
     createdOn: {
         type: Date,
         default: Date.now,
@@ -18,14 +18,12 @@ const taskSchema = new Schema({
         {
             type: SchemaTypes.ObjectId,
             ref: 'User',
-            required: false,
         },
     ],
     room: [
         {
             type: SchemaTypes.ObjectId,
             ref: 'Room',
-            required: false,
         },
     ],
     weight: {

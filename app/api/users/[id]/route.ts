@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
-import dbConnect from '@/lib/mongodb';
-import User from '@/models/User';
+import { dbConnect } from '@/lib';
+import { User } from '@/models';
+import type { Params } from '@/types';
 
-type Params = { params: Promise<{ id: string }> };
-
-export default async function getUser(id: string) {
+async function getUser(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return {
             error: NextResponse.json(
@@ -24,7 +23,7 @@ export default async function getUser(id: string) {
     return { user };
 }
 
-export async function GET(request: NextRequest, { params }: Params) {
+export async function GET(_request: NextRequest, { params }: Params) {
     const { id } = await params;
     const { user, error } = await getUser(id);
     if (error) return error;
@@ -46,7 +45,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: Params) {
+export async function DELETE({ params }: Params) {
     const { id } = await params;
     const { user, error } = await getUser(id);
     if (error) return error;
@@ -56,6 +55,6 @@ export async function DELETE(request: NextRequest, { params }: Params) {
         return new NextResponse(null, { status: 204 });
     } catch (err) {
         console.error(err);
-        return NextResponse.json({ error: 'Delete dailed' }, { status: 500 });
+        return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
     }
 }
