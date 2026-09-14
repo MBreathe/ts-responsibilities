@@ -7,11 +7,11 @@ CRUD web application to handle shared responsibilities around the house.
 ## API Map
 
 ```
-TASKS:
+TASK:
     GET     api/tasks               Get list of all tasks
     GET     api/tasks/:id           Get a task
     POST    api/tasks               Create a task
-    UPDATE  api/tasks/:id           Update a task
+    PATCH   api/tasks/:id           Update a task
     DELETE  api/tasks               Delete all tasks
     DELETE  api/tasks/:id           Delete a task
 
@@ -19,14 +19,14 @@ USER:
     GET     api/users               Get list of all users
     GET     api/users/:id           Get a user
     POST    api/users               Create a user
-    UPDATE  api/users/:id           Update a user
+    PATCH   api/users/:id           Update a user
     DELETE  api/users/:id           Delete a user
 
 ROOM:
     GET     api/rooms               Get list of all rooms
     GET     api/rooms/:id           Get a room
     POST    api/rooms               Create a room
-    UPDATE  api/rooms/:id           Update a room
+    PATCH   api/rooms/:id           Update a room
     DELETE  api/rooms/:id           Delete a room
 ```
 
