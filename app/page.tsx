@@ -1,22 +1,30 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import {
-    Item,
-    ItemActions,
-    ItemContent,
-    ItemDescription,
-    ItemGroup,
-    ItemTitle,
-} from '@/components/ui/item';
-import { PencilIcon, TrashIcon } from '@phosphor-icons/react';
+import { Button, ItemGroup } from '@/components/ui';
+import { CompleteItem } from '@/components/completeItem';
+import { PlusIcon } from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
+import { fetchUtil } from '@/utils/fetch';
+
+type User = { name: string };
+type Task = { name: string; descriotion: string };
 
 export default function Home() {
+    const [users, setUsers] = useState<User[]>([]);
+    const [tasks, setTasks] = useState<Task[]>([]);
+
+    useEffect(() => {
+        const fetchAll = async () => {
+            setTasks(await fetchUtil('api/tasks', 'tasks'));
+            setUsers(await fetchUtil('api/users', 'users'));
+        };
+
+        fetchAll();
+    }, []);
     const unassignedTasks = [
         { name: 'Task1', description: 'Task1 description' },
         { name: 'Task2', description: 'Task2 description' },
         { name: 'Task3', description: 'Task3 description' },
     ];
-    const users = [{ name: 'Ilya' }, { name: 'Ilyas' }];
     const tasksIlya = [
         { name: 'Task4', description: 'Task4 description' },
         { name: 'Task5', description: 'Task5 description' },
@@ -29,97 +37,57 @@ export default function Home() {
     ];
 
     return (
-        <div className="p-5">
-            <h1 className="p-2">Unassigned:</h1>
-            <ItemGroup>
-                {unassignedTasks.map((item, index) => {
+        <div>
+            <div className="px-6 py-2">
+                <h1 className="py-4 text-center">Unassigned:</h1>
+                <ItemGroup>
+                    {unassignedTasks.map((item, index) => {
+                        return (
+                            <CompleteItem
+                                key={index}
+                                name={item.name}
+                                description={item.description}
+                            />
+                        );
+                    })}
+                </ItemGroup>
+
+                {users.map((user, index) => {
                     return (
-                        <Item variant="outline" key={index}>
-                            <ItemContent>
-                                <ItemTitle>{item.name}</ItemTitle>
-                                <ItemDescription>
-                                    {item.description}
-                                </ItemDescription>
-                            </ItemContent>
-                            <ItemActions>
-                                <Button variant="default" size="sm">
-                                    <PencilIcon />
-                                </Button>
-                                <Button variant="destructive" size="sm">
-                                    <TrashIcon />
-                                </Button>
-                            </ItemActions>
-                        </Item>
+                        <div key={index}>
+                            <h1 className="py-2 text-center">{user.name}:</h1>
+                            <ItemGroup>
+                                {user.name === 'Ilya'
+                                    ? tasksIlya.map((item, index) => {
+                                          return (
+                                              <CompleteItem
+                                                  key={index}
+                                                  name={item.name}
+                                                  description={item.description}
+                                              />
+                                          );
+                                      })
+                                    : tasksIlyas.map((item, index) => {
+                                          return (
+                                              <CompleteItem
+                                                  key={index}
+                                                  name={item.name}
+                                                  description={item.description}
+                                              />
+                                          );
+                                      })}
+                            </ItemGroup>
+                        </div>
                     );
                 })}
-            </ItemGroup>
-
-            {users.map((user, index) => {
-                return (
-                    <div key={index}>
-                        <h1 className="p-2">{user.name}:</h1>
-                        <ItemGroup>
-                            {user.name === 'Ilya'
-                                ? tasksIlya.map((item, index) => {
-                                      return (
-                                          <Item variant="outline" key={index}>
-                                              <ItemContent>
-                                                  <ItemTitle>
-                                                      {item.name}
-                                                  </ItemTitle>
-                                                  <ItemDescription>
-                                                      {item.description}
-                                                  </ItemDescription>
-                                              </ItemContent>
-                                              <ItemActions>
-                                                  <Button
-                                                      variant="default"
-                                                      size="sm"
-                                                  >
-                                                      <PencilIcon />
-                                                  </Button>
-                                                  <Button
-                                                      variant="destructive"
-                                                      size="sm"
-                                                  >
-                                                      <TrashIcon />
-                                                  </Button>
-                                              </ItemActions>
-                                          </Item>
-                                      );
-                                  })
-                                : tasksIlyas.map((item, index) => {
-                                      return (
-                                          <Item variant="outline" key={index}>
-                                              <ItemContent>
-                                                  <ItemTitle>
-                                                      {item.name}
-                                                  </ItemTitle>
-                                                  <ItemDescription>
-                                                      {item.description}
-                                                  </ItemDescription>
-                                              </ItemContent>
-                                              <ItemActions>
-                                                  <Button
-                                                      variant="default"
-                                                      size="sm"
-                                                  >
-                                                      <PencilIcon />
-                                                  </Button>
-                                                  <Button
-                                                      variant="destructive"
-                                                      size="sm"
-                                                  >
-                                                      <TrashIcon />
-                                                  </Button>
-                                              </ItemActions>
-                                          </Item>
-                                      );
-                                  })}
-                        </ItemGroup>
-                    </div>
-                );
-            })}
+            </div>
+            <Button
+                variant="outline"
+                size="icon-lg"
+                className="fixed right-6 bottom-6"
+            >
+                <PlusIcon />
+            </Button>
         </div>
     );
 }
