@@ -1,7 +1,7 @@
 import { dbConnect } from '@/lib';
 import { Task } from '@/models';
 import { Params } from '@/types';
-import { validateTaskParams } from '@/utils';
+import { validateTaskParams } from '@/utils/server';
 import mongoose from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
 

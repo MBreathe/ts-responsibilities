@@ -32,6 +32,9 @@ export function validateTaskParams(
 
     // Required fields potentially skipped in PATCH
     if (!partial) {
+        if (!title) {
+            return { valid: false, error: 'title is required' };
+        }
         if (!createdBy) {
             return { valid: false, error: 'createdBy is required' };
         }

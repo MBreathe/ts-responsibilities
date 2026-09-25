@@ -1,6 +1,6 @@
 import { dbConnect } from '@/lib';
 import { Task } from '@/models';
-import { validateTaskParams } from '@/utils';
+import { validateTaskParams } from '@/utils/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET() {

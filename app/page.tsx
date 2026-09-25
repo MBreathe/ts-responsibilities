@@ -2,11 +2,9 @@
 import { Button, ItemGroup } from '@/components/ui';
 import { PlusIcon } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
-import { fetchUtil } from '@/utils/fetch';
+import { fetchUtil } from '@/utils';
 import { TaskItem } from '@/components/TaskItem';
-
-type User = { name: string };
-type Task = { title: string; description: string };
+import { Task, User } from '@/types';
 
 export default function Home() {
     const [users, setUsers] = useState<User[]>([]);
@@ -20,62 +18,33 @@ export default function Home() {
 
         fetchAll();
     }, []);
-    const tasksIlya = [
-        { title: 'Task4', description: 'Task4 description' },
-        { title: 'Task5', description: 'Task5 description' },
-        { title: 'Task6', description: 'Task6 description' },
-    ];
-    const tasksIlyas = [
-        { title: 'Task7', description: 'Task7 description' },
-        { title: 'Task8', description: 'Task8 description' },
-        { title: 'Task9', description: 'Task9 description' },
-    ];
+
+    const handleDelete = async (id: string) => {
+        setTasks((prev) => prev.filter((task) => task._id !== id));
+    };
+    const handleUpdate = async (updatedTask: Task) => {
+        setTasks((prev) =>
+            prev.map((task) =>
+                task._id === updatedTask._id ? updatedTask : task
+            )
+        );
+    };
 
     return (
         <div>
-            <div className="px-6 py-2">
-                <h2 className="py-4 text-center">Unassigned:</h2>
-                <ItemGroup>
-                    {tasks.map((item, index) => {
-                        return (
-                            <TaskItem
-                                key={index}
-                                title={item.title}
-                                description={item.description}
-                            />
-                        );
-                    })}
-                </ItemGroup>
-
-                {users.map((user, index) => {
+            <ItemGroup className="px-6 py-2">
+                {tasks.map((item) => {
                     return (
-                        <div key={index}>
-                            <h2 className="py-2 text-center">{user.name}:</h2>
-                            <ItemGroup>
-                                {user.name === 'Ilya'
-                                    ? tasksIlya.map((item, index) => {
-                                          return (
-                                              <TaskItem
-                                                  key={index}
-                                                  title={item.title}
-                                                  description={item.description}
-                                              />
-                                          );
-                                      })
-                                    : tasksIlyas.map((item, index) => {
-                                          return (
-                                              <TaskItem
-                                                  key={index}
-                                                  title={item.title}
-                                                  description={item.description}
-                                              />
-                                          );
-                                      })}
-                            </ItemGroup>
-                        </div>
+                        <TaskItem
+                            key={item._id}
+                            task={item}
+                            onDelete={handleDelete}
+                            onUpdate={handleUpdate}
+                        />
                     );
                 })}
-            </div>
+            </ItemGroup>
+
             <Button
                 variant="outline"
                 size="icon-lg"

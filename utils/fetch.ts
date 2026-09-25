@@ -9,7 +9,9 @@ export async function fetchUtil(
             throw new Error(`Response status: ${response.status}`);
         }
 
-        const result = await response.json();
+        const text = await response.text();
+        const result = text ? JSON.parse(text) : null;
+
         return key ? result[key] : result;
     } catch (error) {
         console.error('error: ', error);
