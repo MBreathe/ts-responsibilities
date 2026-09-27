@@ -4,16 +4,14 @@ import { PlusIcon } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 import { fetchUtil } from '@/utils';
 import { TaskItem } from '@/components/TaskItem';
-import { Task, User } from '@/types';
+import { Task } from '@/types';
 
 export default function Home() {
-    const [users, setUsers] = useState<User[]>([]);
     const [tasks, setTasks] = useState<Task[]>([]);
 
     useEffect(() => {
         const fetchAll = async () => {
             setTasks(await fetchUtil('api/tasks', 'tasks'));
-            setUsers(await fetchUtil('api/users', 'users'));
         };
 
         fetchAll();
