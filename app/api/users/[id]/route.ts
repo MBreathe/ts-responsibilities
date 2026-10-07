@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { dbConnect } from '@/lib';
-import { User } from '@/models';
+import { Task, User } from '@/models';
 import type { Params } from '@/types';
 
 async function getUser(id: string) {
@@ -50,11 +50,29 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
     const { user, error } = await getUser(id);
     if (error) return error;
 
+    if (await Task.exists({ createdBy: user._id })) {
+        return NextResponse.json(
+            { error: 'User has created tasks' },
+            { status: 409 }
+        );
+    }
+
+    const session = await mongoose.startSession();
+
     try {
-        await user.deleteOne();
+        await session.withTransaction(async () => {
+            await Task.updateMany(
+                { assignedTo: user._id },
+                { $pull: { assignedTo: user._id } },
+                { session }
+            );
+            await user.deleteOne({ session });
+        });
         return new NextResponse(null, { status: 204 });
     } catch (err) {
         console.error(err);
         return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
+    } finally {
+        await session.endSession();
     }
 }

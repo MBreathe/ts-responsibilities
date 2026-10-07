@@ -30,6 +30,9 @@ export function validateTaskParams(
     const { partial = false } = options;
     const { title, createdBy, assignedTo, room, weight, description } = body;
 
+    const isId = (value: unknown): value is string =>
+        typeof value === 'string' && mongoose.Types.ObjectId.isValid(value);
+
     // Required fields potentially skipped in PATCH
     if (!partial) {
         if (!title) {
@@ -44,36 +47,19 @@ export function validateTaskParams(
     }
 
     if (createdBy !== undefined) {
-        if (
-            typeof createdBy !== 'string' ||
-            !mongoose.Types.ObjectId.isValid(createdBy)
-        ) {
+        if (!isId(createdBy)) {
             return { valid: false, error: 'Invalid createdBy ID' };
         }
     }
 
-    if (assignedTo !== undefined && assignedTo !== null) {
-        if (
-            !Array.isArray(assignedTo) ||
-            !assignedTo.every(
-                (id) =>
-                    typeof id === 'string' &&
-                    mongoose.Types.ObjectId.isValid(id)
-            )
-        ) {
+    if (assignedTo !== undefined) {
+        if (!Array.isArray(assignedTo) || !assignedTo.every(isId)) {
             return { valid: false, error: 'Invalid assignedTo IDs' };
         }
     }
 
     if (room !== undefined && room !== null) {
-        if (
-            !Array.isArray(room) ||
-            !room.every(
-                (id) =>
-                    typeof id === 'string' &&
-                    mongoose.Types.ObjectId.isValid(id)
-            )
-        ) {
+        if (!Array.isArray(room) || !room.every(isId)) {
             return { valid: false, error: 'Invalid room IDs' };
         }
     }

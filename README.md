@@ -35,7 +35,6 @@ ROOM:
 ```typescript
 // ---
 // Split into separate model files
-// Double check if required is true or false by deafault and adjust accordingly
 // ---
 const userSchema = new Schema({
     name: String,
@@ -43,7 +42,6 @@ const userSchema = new Schema({
         {
             type: SchemaTypes.ObjectId,
             ref: 'Task',
-            required: false,
         },
     ],
 });
@@ -54,7 +52,6 @@ const roomSchema = new Schema({
         {
             type: SchemaTypes.ObjectId,
             ref: 'Task',
-            required: false,
         },
     ],
 });
@@ -75,14 +72,12 @@ const taskSchema = new Schema({
         {
             type: SchemaTypes.ObjectId,
             ref: 'User',
-            required: false,
         },
     ],
     room: [
         {
             type: String,
             ref: 'Room',
-            required: false,
         },
     ],
     weight: {

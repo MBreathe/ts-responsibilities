@@ -34,4 +34,7 @@ const taskSchema = new Schema({
     description: String,
 });
 
+taskSchema.index({ assignedTo: 1 });
+taskSchema.index({ room: 1 });
+
 export default model('Task', taskSchema);

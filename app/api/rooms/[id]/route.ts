@@ -1,5 +1,5 @@
 import { dbConnect } from '@/lib';
-import { Room } from '@/models';
+import { Room, Task } from '@/models';
 import { Params } from '@/types';
 import mongoose from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
@@ -50,11 +50,22 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
     const { room, error } = await getRoom(id);
     if (error) return error;
 
+    const session = await mongoose.startSession();
+
     try {
-        await room.deleteOne();
+        await session.withTransaction(async () => {
+            await Task.updateMany(
+                { room: room._id },
+                { $pull: { room: room._id } },
+                { session }
+            );
+            await room.deleteOne({ session });
+        });
         return new NextResponse(null, { status: 204 });
     } catch (err) {
         console.error(err);
         return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
+    } finally {
+        await session.endSession();
     }
 }
