@@ -72,7 +72,7 @@ export default function Test() {
             className="w-full flex justify-center py-3"
             onSubmit={handleSubmit}
         >
-            <FieldSet className="w-1/2 center px-2 py-4 border">
+            <FieldSet className="w-5/6 max-w-2xl center px-2 py-4 border">
                 <h2 className="text-center text-xl">Create a task</h2>
                 <FieldGroup>
                     <Field>
