@@ -248,7 +248,7 @@ export default function TaskDialog({
                             </FieldDescription>
                             <Slider
                                 value={task.weight}
-                                onValueChange={(value: number) => {
+                                onValueChange={(value) => {
                                     if (
                                         value === 0 ||
                                         value === 1 ||
