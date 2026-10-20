@@ -1,3 +1,4 @@
+'use client';
 import { PencilIcon, TrashIcon } from '@phosphor-icons/react';
 import {
     Item,
@@ -18,48 +19,30 @@ import {
     DropdownMenuCheckboxItem,
 } from './ui';
 import { SwapIcon } from '@phosphor-icons/react';
-import { useEffect, useState } from 'react';
 import { fetchUtil } from '@/utils';
 import { Room, Task, User } from '@/types';
+import TaskDialog from './TaskDialog';
+import { useRouter } from 'next/navigation';
 
 type ItemProps = {
     task: Task;
-    onDelete: (id: string) => void;
-    onUpdate: (task: Task) => void;
+    users: User[];
+    rooms: Room[];
 };
 
-export function TaskItem({ task, onDelete, onUpdate }: ItemProps) {
-    const [users, setUsers] = useState<User[]>([]);
-    const [rooms, setRooms] = useState<Room[]>([]);
-
-    useEffect(() => {
-        const fetchAll = async () => {
-            setRooms(await fetchUtil('api/rooms', 'rooms'));
-            setUsers(await fetchUtil('api/users', 'users'));
-        };
-
-        fetchAll();
-    }, []);
+export function TaskItem({ task, users, rooms }: ItemProps) {
+    const router = useRouter();
 
     const toggleAssignee = async (userId: string) => {
-        const isAssigned = task.assignedTo.includes(userId);
-        const updatedAssignedTo = isAssigned
+        const updatedAssignedTo = task.assignedTo.includes(userId)
             ? task.assignedTo.filter((id) => id !== userId)
             : [...task.assignedTo, userId];
 
-        const prevAssignedTo = task.assignedTo;
-
-        onUpdate({ ...task, assignedTo: updatedAssignedTo });
-
-        const result = fetchUtil(`api/tasks/${task._id}`, undefined, {
+        await fetchUtil(`/api/tasks/${task._id}`, undefined, {
             method: 'PATCH',
             body: JSON.stringify({ assignedTo: updatedAssignedTo }),
         });
-
-        // safeguard revert
-        if (result === undefined) {
-            onUpdate({ ...task, assignedTo: prevAssignedTo });
-        }
+        router.refresh();
     };
 
     return (
@@ -100,13 +83,15 @@ export function TaskItem({ task, onDelete, onUpdate }: ItemProps) {
             </ItemContent>
             <ItemActions>
                 <ButtonGroup>
-                    <Button
+                    <TaskDialog
+                        users={users}
+                        rooms={rooms}
+                        existingTask={task}
                         variant="default"
                         size="icon-sm"
                         className="cursor-pointer"
-                    >
-                        <PencilIcon />
-                    </Button>
+                        icon={<PencilIcon />}
+                    />
 
                     <DropdownMenu>
                         <DropdownMenuTrigger
@@ -153,16 +138,11 @@ export function TaskItem({ task, onDelete, onUpdate }: ItemProps) {
                         className="cursor-pointer"
                         onClick={async () => {
                             await fetchUtil(
-                                `api/tasks/${task._id}`,
+                                `/api/tasks/${task._id}`,
                                 undefined,
-                                {
-                                    method: 'DELETE',
-                                }
+                                { method: 'DELETE' }
                             );
-                            onDelete(task._id);
-                            console.log(
-                                `Task with ID: ${task._id} was deleted`
-                            );
+                            router.refresh();
                         }}
                     >
                         <TrashIcon />

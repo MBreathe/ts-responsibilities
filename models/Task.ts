@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const { Schema, SchemaTypes, model } = mongoose;
+const { Schema, SchemaTypes, model, models } = mongoose;
 
 const taskSchema = new Schema({
     title: { type: String, required: true },
@@ -37,4 +37,4 @@ const taskSchema = new Schema({
 taskSchema.index({ assignedTo: 1 });
 taskSchema.index({ room: 1 });
 
-export default model('Task', taskSchema);
+export default models.Task || model('Task', taskSchema);

@@ -1,55 +1,31 @@
-'use client';
-import { Button, ItemGroup } from '@/components/ui';
-import { PlusIcon } from '@phosphor-icons/react';
-import { useEffect, useState } from 'react';
-import { fetchUtil } from '@/utils';
+import { ItemGroup } from '@/components/ui';
 import { TaskItem } from '@/components/TaskItem';
-import { Task } from '@/types';
+import TaskDialog from '@/components/TaskDialog';
+import { getRooms, getTasks, getUsers } from '@/lib/data';
 
-export default function Home() {
-    const [tasks, setTasks] = useState<Task[]>([]);
+export const dynamic = 'force-dynamic';
 
-    useEffect(() => {
-        const fetchAll = async () => {
-            setTasks(await fetchUtil('api/tasks', 'tasks'));
-        };
-
-        fetchAll();
-    }, []);
-
-    const handleDelete = async (id: string) => {
-        setTasks((prev) => prev.filter((task) => task._id !== id));
-    };
-    const handleUpdate = async (updatedTask: Task) => {
-        setTasks((prev) =>
-            prev.map((task) =>
-                task._id === updatedTask._id ? updatedTask : task
-            )
-        );
-    };
+export default async function Home() {
+    const [tasks, users, rooms] = await Promise.all([
+        getTasks(),
+        getUsers(),
+        getRooms(),
+    ]);
 
     return (
         <div>
             <ItemGroup className="px-6 py-2">
-                {tasks.map((item) => {
-                    return (
-                        <TaskItem
-                            key={item._id}
-                            task={item}
-                            onDelete={handleDelete}
-                            onUpdate={handleUpdate}
-                        />
-                    );
-                })}
+                {tasks.map((task) => (
+                    <TaskItem
+                        key={task._id}
+                        task={task}
+                        users={users}
+                        rooms={rooms}
+                    />
+                ))}
             </ItemGroup>
 
-            <Button
-                variant="outline"
-                size="icon-lg"
-                className="fixed right-6 bottom-6"
-            >
-                <PlusIcon />
-            </Button>
+            <TaskDialog users={users} rooms={rooms} />
         </div>
     );
 }
